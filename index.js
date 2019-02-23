@@ -14,8 +14,10 @@ export const backoffWithMs = ({
     throw new Error('packoff: Current attempt must be a integer to calc delay');
 
   const delayMs = jitter
-    ? getRandomInt(Math.min(baseDelayTime * 2 ** currentAttempt, cap))
-    : Math.min(baseDelayTime * 2 ** currentAttempt, cap);
+    ? getRandomInt(
+        Math.min(baseDelayTime * getRandomInt(2 ** currentAttempt), cap),
+      )
+    : Math.min(baseDelayTime * getRandomInt(2 ** currentAttempt), cap);
 
   return [delay(delayMs), delayMs];
 };
