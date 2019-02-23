@@ -25,10 +25,10 @@ The simplest use case is when you have some async thing you want to try over and
 import { backoff } from 'packoff';
 import riskyBusiness from './async-risky-business';
 
-const tryToDoSomeWork = () => {
+const tryToDoSomeWork = async () => {
   let isDone = false;
   let retries = 0;
-  while(!isDone && retries < 10) {
+  while (!isDone && retries < 10) {
     try {
       await riskyBusiness();
       console.log('success');
@@ -39,7 +39,7 @@ const tryToDoSomeWork = () => {
       await backoff({ currentAttempt: retries, baseDelayTime: 1000 });
     }
   }
-}
+};
 ```
 
 Optionally, if you want to setup some sort of base configuration, you can do that with setupBackoff.
@@ -50,10 +50,10 @@ import riskyBusiness from './async-risky-business';
 
 const myBackoff = setupBackoff({ baseDelayTime: 1500, jitter: false });
 
-const tryToDoSomeWork = () => {
+const tryToDoSomeWork = async () => {
   let isDone = false;
   let retries = 0;
-  while(!isDone && retries < 10) {
+  while (!isDone && retries < 10) {
     try {
       await riskyBusiness();
       console.log('success');
@@ -65,7 +65,7 @@ const tryToDoSomeWork = () => {
       await myBackoff(retries);
     }
   }
-}
+};
 ```
 
 Lastly, when debugging or for logging, it may be useful to know how long your retry is going to wait. There are additional `backoffWithMs` and `setupBackoffWithMs` functions that return an array instead of a promise. The first element is the delay promise, the second is the ms until that promise resolves;
