@@ -68,6 +68,22 @@ const tryToDoSomeWork = async () => {
 };
 ```
 
+The helper function `tryUntilResolved` is basically the above code wrapped up for you. It'll retry a given async function n (default: 10) times until the async function resolves successfully, backing off in between attempts. (It'll reject if all the attempts fail.)
+
+```js
+import { tryUntilResolved } from 'packoff';
+import riskyBusiness from './async-risky-business';
+
+const riskyBusinessWithRetry = tryUntilResolved(riskyBusinessWithRetry, {
+  baseDelayTime: 500,
+  attemptLimit: 10,
+});
+
+const tryToDoSomeWork = async () => {
+  riskyBusinessWithRetry(og, risky, args);
+};
+```
+
 Lastly, when debugging or for logging, it may be useful to know how long your retry is going to wait. There are additional `backoffWithMs` and `setupBackoffWithMs` functions that return an array instead of a promise. The first element is the delay promise, the second is the ms until that promise resolves;
 
 ```js

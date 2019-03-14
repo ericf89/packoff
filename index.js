@@ -28,3 +28,22 @@ export const setupBackoff = args => currentAttempt =>
   backoff({ ...args, currentAttempt });
 export const setupBackoffWithMs = args => currentAttempt =>
   backoffWithMs({ ...args, currentAttempt });
+
+export const tryUntilResolved = (func, backoffArgs) => async funcArgs => {
+  let currentAttempt = backoffArgs.currentAttempt || 0;
+  const thisBackoff = setupBackoff(backoffArgs);
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    try {
+      const result = await func(funcArgs);
+      return result;
+    } catch (e) {
+      currentAttempt += 1;
+      if (currentAttempt < backoffArgs?.attemptLimit || 10) {
+        await thisBackoff(currentAttempt);
+      } else {
+        throw e;
+      }
+    }
+  }
+};
