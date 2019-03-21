@@ -3,7 +3,7 @@ import delay from 'delay';
 const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
 
 export const backoffWithMs = ({
-  baseDelayTime,
+  baseDelayTime = 1000,
   currentAttempt,
   jitter = true,
   cap = 20_000,
@@ -30,7 +30,7 @@ export const setupBackoffWithMs = args => currentAttempt =>
   backoffWithMs({ ...args, currentAttempt });
 
 export const tryUntilResolved = (func, backoffArgs) => async (...funcArgs) => {
-  let currentAttempt = backoffArgs.currentAttempt || 0;
+  let currentAttempt = backoffArgs?.currentAttempt || 0;
   const thisBackoff = setupBackoff(backoffArgs);
   // eslint-disable-next-line no-constant-condition
   while (true) {

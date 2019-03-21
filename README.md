@@ -14,8 +14,8 @@ The main backoff functions take an options object with the following arguments:
 
 | Argument         | Default             | Description                                                                                                                                                                                               |
 | ---------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `baseDelayTime`  | **none** (required) | This is the base amount of time (in milliseconds used to calculate the backoff delay.                                                                                                                     |
 | `currentAttempt` | **none** (required) | The number of attempts tried so far. The higher this is, the longer the possible delay                                                                                                                    |
+| `baseDelayTime`  | 1000 (1 sec) | This is the base amount of time (in milliseconds used to calculate the backoff delay.)                                                                                                                     |
 | `jitter`         | true                | With jitter, your backoff attempt delays will have a smoother curve. You normally want this. [Read this](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/) for more info.        |
 | `cap`            | 20000 (20 sec)      | This caps the max delay of your back off attempts. If you're going to repeatedly retry something over and over, you probably don't want your attempts to end up in the minute time frame... unless you do |
 
