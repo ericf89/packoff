@@ -1,6 +1,6 @@
 {
   "name": "packoff",
-  "version": "1.1.4",
+  "version": "2.0.0",
   "description": "Promise based exponential backoff",
   "main": "build/index.js",
   "scripts": {
