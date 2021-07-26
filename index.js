@@ -1,6 +1,6 @@
 import delay from 'delay';
 
-const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
+const getRandomInt = (max) => Math.floor(Math.random() * Math.floor(max));
 
 export const backoffWithMs = ({
   baseDelayTime = 1000,
@@ -22,28 +22,30 @@ export const backoffWithMs = ({
   return [delay(delayMs), delayMs];
 };
 
-export const backoffMs = args => backoffWithMs(args)[1];
-export const backoff = args => backoffWithMs(args)[0];
-export const setupBackoff = args => currentAttempt =>
+export const backoffMs = (args) => backoffWithMs(args)[1];
+export const backoff = (args) => backoffWithMs(args)[0];
+export const setupBackoff = (args) => (currentAttempt) =>
   backoff({ ...args, currentAttempt });
-export const setupBackoffWithMs = args => currentAttempt =>
+export const setupBackoffWithMs = (args) => (currentAttempt) =>
   backoffWithMs({ ...args, currentAttempt });
 
-export const tryUntilResolved = (func, backoffArgs) => async (...funcArgs) => {
-  let currentAttempt = backoffArgs?.currentAttempt || 0;
-  const thisBackoff = setupBackoff(backoffArgs);
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    try {
-      const result = await func(...funcArgs);
-      return result;
-    } catch (e) {
-      currentAttempt += 1;
-      if (currentAttempt < (backoffArgs?.attemptLimit || 10)) {
-        await thisBackoff(currentAttempt);
-      } else {
-        throw e;
+export const tryUntilResolved =
+  (func, backoffArgs) =>
+  async (...funcArgs) => {
+    let currentAttempt = backoffArgs?.currentAttempt || 0;
+    const thisBackoff = setupBackoff(backoffArgs);
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      try {
+        const result = await func(...funcArgs);
+        return result;
+      } catch (e) {
+        currentAttempt += 1;
+        if (currentAttempt < (backoffArgs?.attemptLimit || 10)) {
+          await thisBackoff(currentAttempt);
+        } else {
+          throw e;
+        }
       }
     }
-  }
-};
+  };
